@@ -62,7 +62,7 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         id: version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(node -p "require('./packages/smartbill/package.json').version")
           echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Tag release

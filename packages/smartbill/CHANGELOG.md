@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.137.3
+
+### Patch Changes
+
+- Widen the optional lucide-react peer range for current operator apps.
+
 ## 0.137.2
 
 ### Patch Changes

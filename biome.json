@@ -33,13 +33,6 @@
     }
   },
   "files": {
-    "includes": [
-      "**",
-      "!**/node_modules",
-      "!**/dist",
-      "!**/.turbo",
-      "!**/.changeset",
-      "!**/*.gen.ts"
-    ]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/.changeset", "!**/*.gen.ts"]
   }
 }

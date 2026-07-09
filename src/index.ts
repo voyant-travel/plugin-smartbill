@@ -67,7 +67,7 @@ export type {
   SmartbillPluginOptions,
   SmartbillSyncEventNames,
 } from "./plugin.js"
-export { smartbillPlugin } from "./plugin.js"
+export { smartbillPlugin, smartbillPlugin as voyantPlugin } from "./plugin.js"
 export type { ResolvedSmartbillSyncEventNames, SmartbillSyncRuntime } from "./runtime.js"
 export { createSmartbillSyncRuntime } from "./runtime.js"
 export type {

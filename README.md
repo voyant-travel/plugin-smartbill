@@ -208,7 +208,7 @@ lazy remote-document accessors returned by discovery.
 
 | Entry | Description |
 | --- | --- |
-| `.` | Barrel re-exports |
+| `.` | Barrel re-exports, including managed-profile `voyantPlugin` alias |
 | `./plugin` | `smartbillPlugin(options)` — packaged adapter/subscriber bundle |
 | `./client` | `createSmartbillClient` — `createInvoice`, `cancelInvoice`, `viewPdf`, `getPaymentStatus`, etc. |
 | `./hono` | `createSmartbillAdminModule(options)` and admin sync routes |

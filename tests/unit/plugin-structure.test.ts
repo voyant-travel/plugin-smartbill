@@ -1,9 +1,14 @@
 import "./plugin-test-setup.js"
 import { describe, expect, it, vi } from "vitest"
+import { smartbillPlugin as packageSmartbillPlugin, voyantPlugin } from "../../src/index.js"
 import { smartbillPlugin } from "../../src/plugin.js"
 import { baseOptions, financeServiceMock, type SmartbillFetch } from "./plugin-test-helpers.js"
 
 describe("smartbillPlugin structure", () => {
+  it("exports a managed-profile-recognized plugin factory from the package entrypoint", () => {
+    expect(voyantPlugin).toBe(packageSmartbillPlugin)
+  })
+
   it("returns a Plugin with name and version", () => {
     const fetchMock = vi.fn<SmartbillFetch>()
     const plugin = smartbillPlugin({ ...baseOptions, fetch: fetchMock })

@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.137.4
+
+### Patch Changes
+
+- 2c45ef8: Export `voyantPlugin` from the package entrypoint so source-free managed profiles can resolve the SmartBill plugin by convention.
+
 ## 0.137.3
 
 ### Patch Changes

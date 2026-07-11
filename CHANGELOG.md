@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.139.0
+
+### Minor Changes
+
+- ebb15df: Own the graph-selected SmartBill subscriber implementation behind typed database, storage, and configuration host ports.
+
 ## 0.138.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.138.0
+
+### Minor Changes
+
+- a97c297: Publish a package-owned Voyant plugin manifest and lazy subscriber runtime references for invoice, proforma, and payment synchronization.
+
 ## 0.137.4
 
 ### Patch Changes

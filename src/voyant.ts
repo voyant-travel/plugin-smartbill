@@ -1,16 +1,20 @@
+import { definePlugin, requirePort } from "@voyant-travel/core/project"
+import { smartbillRuntimeHostPort } from "./runtime-port.js"
+
 const PACKAGE_ID = "@voyant-travel/plugin-smartbill"
 
 /** Import-cheap deployment declaration owned by the SmartBill plugin package. */
-export const smartbillVoyantPlugin = {
-  schemaVersion: "voyant.plugin.v1",
+export const smartbillVoyantPlugin = definePlugin({
   id: PACKAGE_ID,
   packageName: PACKAGE_ID,
   localId: "plugin-smartbill",
+  runtime: {
+    entry: "./graph-runtime",
+    export: "createSmartbillVoyantRuntime",
+  },
+  runtimePorts: [requirePort(smartbillRuntimeHostPort)],
   provides: {
     capabilities: ["finance.external-invoicing", "finance.external-payment-sync"],
-  },
-  requires: {
-    ports: [{ id: "database.client" }, { id: "storage.object", optional: true }],
   },
   api: [
     {
@@ -19,8 +23,8 @@ export const smartbillVoyantPlugin = {
       mount: "smartbill",
       transactional: true,
       runtime: {
-        entry: "./hono",
-        export: "createSmartbillAdminModule",
+        entry: "./graph-runtime",
+        export: "createSmartbillVoyantRuntime",
       },
     },
   ],
@@ -130,6 +134,6 @@ export const smartbillVoyantPlugin = {
     ownership: "package",
     externalProvider: "smartbill",
   },
-} as const
+})
 
 export default smartbillVoyantPlugin

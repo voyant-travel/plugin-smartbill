@@ -6,13 +6,14 @@ e-invoicing adapter for Voyant.
 ## Scope
 
 - SmartBill API client and validation.
-- Finance invoice event subscriber bundle.
+- Package-owned Finance invoice event subscriber runtime and persistence mapping.
 - Optional Hono admin route wiring.
 - Optional invoice detail UI helpers.
 - SmartBill sync, artifact, reconciliation, and proforma conversion workflows.
 
-Out of scope: finance core semantics and application-specific operator wiring.
-Those stay in the consuming Voyant app or framework packages.
+Out of scope: finance core semantics and generic Node database, storage, and
+configuration adapters. Those stay in the consuming Voyant app or framework
+packages; SmartBill-specific event handling stays here.
 
 ## Working Rules
 

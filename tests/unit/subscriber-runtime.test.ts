@@ -1,66 +1,60 @@
 import type { BootstrapContext, EventEnvelope } from "@voyant-travel/core"
 import { describe, expect, it, vi } from "vitest"
+
+import type { SmartbillRuntimeHost } from "../../src/graph-runtime.js"
 import {
-  SMARTBILL_SUBSCRIBER_RUNTIME_KEY,
-  type SmartbillSubscriberRuntime,
+  SMARTBILL_RUNTIME_HOST_KEY,
   smartbillInvoiceIssuedSubscriber,
   smartbillPaymentRecordedSubscriber,
   smartbillProformaIssuedSubscriber,
 } from "../../src/subscriber-runtime.js"
 
 const descriptors = [
-  [smartbillInvoiceIssuedSubscriber, "invoiceIssued"],
-  [smartbillProformaIssuedSubscriber, "proformaIssued"],
-  [smartbillPaymentRecordedSubscriber, "paymentRecorded"],
-] as const
+  smartbillInvoiceIssuedSubscriber,
+  smartbillProformaIssuedSubscriber,
+  smartbillPaymentRecordedSubscriber,
+]
+
+function contextWithHost(host: SmartbillRuntimeHost) {
+  return {
+    bindings: {},
+    container: {
+      has: vi.fn((key: string) => key === SMARTBILL_RUNTIME_HOST_KEY),
+      resolve: vi.fn(() => host),
+    },
+    eventBus: { subscribe: vi.fn() },
+  } as unknown as BootstrapContext
+}
 
 describe("SmartBill subscriber runtimes", () => {
-  it.each(
-    descriptors,
-  )("registers %s and delegates through the explicit runtime key", async (descriptor, handler) => {
-    const runtime: SmartbillSubscriberRuntime = {
-      invoiceIssued: vi.fn(),
-      proformaIssued: vi.fn(),
-      paymentRecorded: vi.fn(),
-    }
-    let registered:
-      | { eventType: string; handler: (envelope: EventEnvelope) => Promise<void> | void }
-      | undefined
-    const context = {
-      container: {
-        has: vi.fn((key: string) => key === SMARTBILL_SUBSCRIBER_RUNTIME_KEY),
-        resolve: vi.fn(() => runtime),
-      },
-      eventBus: {
-        subscribe: vi.fn((eventType, registeredHandler) => {
-          registered = { eventType, handler: registeredHandler }
-        }),
-      },
-    } as unknown as BootstrapContext
-
-    await descriptor.register(context)
-    expect(registered?.eventType).toBe(descriptor.eventType)
-
-    const envelope = { id: "evt_1", name: descriptor.eventType, data: {} } as EventEnvelope
-    await registered?.handler(envelope)
-
-    expect(runtime[handler]).toHaveBeenCalledWith(envelope)
-    expect(context.container.resolve).toHaveBeenCalledWith(SMARTBILL_SUBSCRIBER_RUNTIME_KEY)
+  it.each(descriptors)("owns the stable graph runtime %s", (descriptor) => {
+    expect(descriptor.id).toContain("@voyant-travel/plugin-smartbill#subscriber.")
+    expect(descriptor.eventType).toBeTruthy()
   })
 
-  it("fails clearly when the host runtime adapter is unavailable", async () => {
-    let handler: ((envelope: EventEnvelope) => Promise<void> | void) | undefined
-    const context = {
-      container: { has: () => false },
-      eventBus: {
-        subscribe: (_eventType: string, registeredHandler: typeof handler) => {
-          handler = registeredHandler
-        },
-      },
-    } as unknown as BootstrapContext
+  it("keeps disabled configuration out of the event bus", async () => {
+    const host: SmartbillRuntimeHost = {
+      resolveConfig: () => null,
+      resolveDatabase: vi.fn(),
+    }
+    const context = contextWithHost(host)
 
     await smartbillInvoiceIssuedSubscriber.register(context)
 
-    await expect(handler?.({} as EventEnvelope)).rejects.toThrow(SMARTBILL_SUBSCRIBER_RUNTIME_KEY)
+    expect(context.container.resolve).toHaveBeenCalledWith(SMARTBILL_RUNTIME_HOST_KEY)
+    expect(context.eventBus.subscribe).not.toHaveBeenCalled()
+    expect(host.resolveDatabase).not.toHaveBeenCalled()
+  })
+
+  it("fails clearly when the generic host adapter is unavailable", async () => {
+    const context = {
+      bindings: {},
+      container: { has: () => false },
+      eventBus: { subscribe: (_eventType: string, _handler: (event: EventEnvelope) => void) => {} },
+    } as unknown as BootstrapContext
+
+    await expect(smartbillInvoiceIssuedSubscriber.register(context)).rejects.toThrow(
+      SMARTBILL_RUNTIME_HOST_KEY,
+    )
   })
 })

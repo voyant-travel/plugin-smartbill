@@ -1,12 +1,12 @@
 import type { BootstrapContext, EventEnvelope } from "@voyant-travel/core"
 
-export const SMARTBILL_SUBSCRIBER_RUNTIME_KEY = "providers.smartbill.subscriberRuntime"
+import {
+  createSmartbillOwnedSubscriberRuntime,
+  type SmartbillOwnedSubscriberRuntime,
+  type SmartbillRuntimeHost,
+} from "./graph-runtime.js"
 
-export interface SmartbillSubscriberRuntime {
-  invoiceIssued: (envelope: EventEnvelope) => Promise<void> | void
-  proformaIssued: (envelope: EventEnvelope) => Promise<void> | void
-  paymentRecorded: (envelope: EventEnvelope) => Promise<void> | void
-}
+export const SMARTBILL_RUNTIME_HOST_KEY = "providers.smartbill.host"
 
 export interface SmartbillSubscriberRuntimeDescriptor {
   readonly id: string
@@ -14,7 +14,29 @@ export interface SmartbillSubscriberRuntimeDescriptor {
   readonly register: (context: BootstrapContext) => Promise<void> | void
 }
 
-type SmartbillSubscriberRuntimeHandler = keyof SmartbillSubscriberRuntime
+type SmartbillSubscriberRuntimeHandler = keyof Omit<SmartbillOwnedSubscriberRuntime, "bootstrap">
+
+const runtimes = new WeakMap<object, Promise<SmartbillOwnedSubscriberRuntime | null>>()
+
+function resolveRuntime(
+  context: BootstrapContext,
+): Promise<SmartbillOwnedSubscriberRuntime | null> {
+  const container = context.container as object
+  const existing = runtimes.get(container)
+  if (existing) return existing
+
+  const initializing = (async () => {
+    if (!context.container.has(SMARTBILL_RUNTIME_HOST_KEY)) {
+      throw new Error(`SmartBill host is not registered at "${SMARTBILL_RUNTIME_HOST_KEY}".`)
+    }
+    const host = context.container.resolve<SmartbillRuntimeHost>(SMARTBILL_RUNTIME_HOST_KEY)
+    const runtime = createSmartbillOwnedSubscriberRuntime(host, context.bindings)
+    await runtime?.bootstrap()
+    return runtime
+  })()
+  runtimes.set(container, initializing)
+  return initializing
+}
 
 function defineSmartbillSubscriberRuntime(
   id: string,
@@ -24,16 +46,10 @@ function defineSmartbillSubscriberRuntime(
   return {
     id,
     eventType,
-    register: ({ container, eventBus }) => {
-      eventBus.subscribe(eventType, async (envelope) => {
-        if (!container.has(SMARTBILL_SUBSCRIBER_RUNTIME_KEY)) {
-          throw new Error(
-            `SmartBill subscriber runtime is not registered at "${SMARTBILL_SUBSCRIBER_RUNTIME_KEY}".`,
-          )
-        }
-        const runtime = container.resolve<SmartbillSubscriberRuntime>(
-          SMARTBILL_SUBSCRIBER_RUNTIME_KEY,
-        )
+    register: async (context) => {
+      const runtime = await resolveRuntime(context)
+      if (!runtime) return
+      context.eventBus.subscribe(eventType, async (envelope: EventEnvelope) => {
         await runtime[handler](envelope)
       })
     },

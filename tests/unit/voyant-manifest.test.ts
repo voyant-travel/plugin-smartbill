@@ -52,6 +52,8 @@ describe("SmartBill deployment manifest", () => {
       config: [
         { key: "companyVatCode", required: true },
         { key: "seriesName", required: true },
+        { key: "invoiceSeriesName", required: false },
+        { key: "proformaSeriesName", required: false },
         { key: "apiUrl", default: "https://ws.smartbill.ro/SBORO/api" },
         { key: "language", default: "RO" },
         { key: "art311SpecialRegime", default: false },

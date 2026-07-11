@@ -11,6 +11,32 @@ Architecturally, this package is primarily:
 It subscribes to invoice events and creates, cancels, or syncs invoices via the
 SmartBill REST API for Romanian tax compliance.
 
+## Graph runtime
+
+Voyant deployments select the package through `./voyant`. The selected
+subscriber descriptors own invoice/proforma issuance, conversion, payment
+sync, finance reference persistence, customer mapping, and PDF attachment
+behavior. A Node host supplies only infrastructure through
+`SMARTBILL_RUNTIME_HOST_KEY`:
+
+```typescript
+import type { SmartbillRuntimeHost } from "@voyant-travel/plugin-smartbill/graph-runtime"
+import { SMARTBILL_RUNTIME_HOST_KEY } from "@voyant-travel/plugin-smartbill/subscriber-runtime"
+
+const host: SmartbillRuntimeHost = {
+  resolveDatabase: (bindings) => resolvePostgresDatabase(bindings),
+  resolveDocumentStorage: (bindings) => resolvePrivateDocumentStorage(bindings),
+  resolveConfig: (bindings) => resolveSmartbillConfig(bindings),
+}
+
+container.register(SMARTBILL_RUNTIME_HOST_KEY, host)
+```
+
+`resolveConfig` returns `null` when SmartBill is not configured. Otherwise it
+returns credentials, `companyVatCode`, the standard `seriesName`, and optional
+invoice/proforma series overrides. Application hosts do not implement or
+register SmartBill event handlers.
+
 ## Install
 
 ```bash
@@ -217,6 +243,9 @@ lazy remote-document accessors returned by discovery.
 | `./mock` | `createSmartbillMockServer` — stateful local SmartBill-compatible mock for tests |
 | `./workflows` | Proforma conversion polling and drift reconciliation factories |
 | `./types` | SmartBill adapter and bundle types |
+| `./graph-runtime` | Package-owned graph subscriber implementation and narrow host-port types |
+| `./subscriber-runtime` | Import-cheap graph runtime descriptors and host registration key |
+| `./voyant` | Import-cheap Voyant plugin manifest |
 
 ## Rate limits
 

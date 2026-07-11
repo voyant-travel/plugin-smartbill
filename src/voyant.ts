@@ -65,6 +65,16 @@ export const smartbillVoyantPlugin = {
       required: true,
     },
     {
+      id: `${PACKAGE_ID}#config.invoice-series-name`,
+      key: "invoiceSeriesName",
+      required: false,
+    },
+    {
+      id: `${PACKAGE_ID}#config.proforma-series-name`,
+      key: "proformaSeriesName",
+      required: false,
+    },
+    {
       id: `${PACKAGE_ID}#config.api-url`,
       key: "apiUrl",
       default: "https://ws.smartbill.ro/SBORO/api",

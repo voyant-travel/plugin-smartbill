@@ -13,7 +13,9 @@
     "./invoice-ui": "./src/invoice-ui.tsx",
     "./settlement": "./src/settlement.ts",
     "./workflows": "./src/workflows.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./subscriber-runtime": "./src/subscriber-runtime.ts",
+    "./voyant": "./src/voyant.ts"
   },
   "scripts": {
     "typecheck": "NODE_OPTIONS=--max-old-space-size=14336 tsc --noEmit",
@@ -135,6 +137,16 @@
         "types": "./dist/types.d.ts",
         "import": "./dist/types.js",
         "default": "./dist/types.js"
+      },
+      "./subscriber-runtime": {
+        "types": "./dist/subscriber-runtime.d.ts",
+        "import": "./dist/subscriber-runtime.js",
+        "default": "./dist/subscriber-runtime.js"
+      },
+      "./voyant": {
+        "types": "./dist/voyant.d.ts",
+        "import": "./dist/voyant.js",
+        "default": "./dist/voyant.js"
       }
     },
     "main": "./dist/index.js",
@@ -143,6 +155,11 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/voyant-travel/plugin-smartbill.git"
+  },
+  "voyant": {
+    "schemaVersion": "voyant.package.v1",
+    "kind": "plugin",
+    "manifest": "./voyant"
   },
   "packageManager": "pnpm@10.18.0",
   "engines": {

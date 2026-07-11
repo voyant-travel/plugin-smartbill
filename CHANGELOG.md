@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.140.0
+
+### Minor Changes
+
+- 0302837: Expose a typed SmartBill graph runtime host port and package-owned runtime factory so Node deployments only bind infrastructure and configuration dependencies.
+
 ## 0.139.0
 
 ### Minor Changes

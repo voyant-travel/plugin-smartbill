@@ -12,8 +12,8 @@ importers:
         specifier: ^0.151.0
         version: 0.151.5(@neondatabase/serverless@1.1.0)(@upstash/redis@1.38.0)(pg@8.22.0)(postgres@3.4.9)
       '@voyant-travel/core':
-        specifier: ^0.114.0
-        version: 0.114.0
+        specifier: ^0.117.0
+        version: 0.117.0
       '@voyant-travel/finance':
         specifier: ^0.151.0
         version: 0.151.4(@neondatabase/serverless@1.1.0)(@upstash/redis@1.38.0)(pg@8.22.0)(postgres@3.4.9)
@@ -868,9 +868,6 @@ packages:
 
   '@voyant-travel/core@0.111.0':
     resolution: {integrity: sha512-gtP2hk4pBBrO5dLtuZrhT2AIDrhmjH++gtgGDibF6edIeVBtr/19iwJ5JHRF9Rq5bfRElw+0/tSxWNCI4T5cTA==}
-
-  '@voyant-travel/core@0.114.0':
-    resolution: {integrity: sha512-VO3P2l5a/J4V5TvHM/tTYh6Z8q39dgrtDRh/DTlrmRSPuTWx5qGeg3ORQSJhHQB1/jqiSijm59dzTlpbMrM0GQ==}
 
   '@voyant-travel/core@0.116.0':
     resolution: {integrity: sha512-1uq8TDayif0k2I+i0dXryUNmjhQbWcQlMJxtPBB5UGiNuUJFt0VdpfL49sJBgaLdRzcayAEkazFkNfx2hp0ddQ==}
@@ -3057,8 +3054,6 @@ snapshots:
       - sqlite3
 
   '@voyant-travel/core@0.111.0': {}
-
-  '@voyant-travel/core@0.114.0': {}
 
   '@voyant-travel/core@0.116.0': {}
 

@@ -1,5 +1,6 @@
 import { bookings } from "@voyant-travel/bookings/schema"
-import type { EventEnvelope } from "@voyant-travel/core"
+import type { BootstrapContext, EventEnvelope } from "@voyant-travel/core"
+import { defineGraphRuntimeFactory } from "@voyant-travel/core/project"
 import {
   financeService,
   type InvoiceSettlementPoller,
@@ -7,6 +8,7 @@ import {
   invoices,
   taxRegimes,
 } from "@voyant-travel/finance"
+import type { HonoModule } from "@voyant-travel/hono/module"
 import { identityAddresses, identityContactPoints } from "@voyant-travel/identity/schema"
 import { resolveBookingTaxSettings } from "@voyant-travel/operator-settings"
 import { organizations, people } from "@voyant-travel/relationships/schema"
@@ -14,6 +16,8 @@ import type { StorageProvider } from "@voyant-travel/storage"
 import { and, asc, eq, inArray } from "drizzle-orm"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import { createSmartbillClient, type SmartbillClientApi } from "./client.js"
+import { createSmartbillAdminModule } from "./hono.js"
+import { SMARTBILL_RUNTIME_HOST_KEY, smartbillRuntimeHostPort } from "./runtime-port.js"
 import { createSmartbillInvoiceSettlementPoller } from "./settlement.js"
 import type { SmartbillClient, SmartbillInvoiceBody, SmartbillProduct } from "./types.js"
 
@@ -47,6 +51,36 @@ export interface SmartbillRuntimeDependencies {
   client?: SmartbillClientApi
   fetch?: typeof fetch
 }
+
+/** Package-owned adapter from the selected graph's typed Node host port. */
+export const createSmartbillVoyantRuntime = defineGraphRuntimeFactory<HonoModule>(
+  async ({ getPort }) => {
+    const host = await getPort(smartbillRuntimeHostPort)
+    const configured = createSmartbillAdminModule({
+      pluginOptions: (bindings) => {
+        const config = host.resolveConfig(bindings)
+        if (!config) {
+          throw new Error("SmartBill is selected but its deployment configuration is unavailable.")
+        }
+        return config
+      },
+    })
+    const bootstrap = configured.module.bootstrap
+
+    return {
+      ...configured,
+      module: {
+        ...configured.module,
+        bootstrap: async (context: BootstrapContext) => {
+          context.container.register(SMARTBILL_RUNTIME_HOST_KEY, host)
+          await bootstrap?.(context)
+        },
+      },
+    }
+  },
+)
+
+export { SMARTBILL_RUNTIME_HOST_KEY, smartbillRuntimeHostPort } from "./runtime-port.js"
 
 export type InvoiceIssuedPayload = {
   invoiceId?: string

@@ -5,8 +5,9 @@ import {
   type SmartbillOwnedSubscriberRuntime,
   type SmartbillRuntimeHost,
 } from "./graph-runtime.js"
+import { SMARTBILL_RUNTIME_HOST_KEY } from "./runtime-port.js"
 
-export const SMARTBILL_RUNTIME_HOST_KEY = "providers.smartbill.host"
+export { SMARTBILL_RUNTIME_HOST_KEY } from "./runtime-port.js"
 
 export interface SmartbillSubscriberRuntimeDescriptor {
   readonly id: string

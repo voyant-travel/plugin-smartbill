@@ -8,16 +8,21 @@ describe("SmartBill deployment manifest", () => {
       id: "@voyant-travel/plugin-smartbill",
       packageName: "@voyant-travel/plugin-smartbill",
       localId: "plugin-smartbill",
+      runtime: {
+        entry: "./graph-runtime",
+        export: "createSmartbillVoyantRuntime",
+      },
+      runtimePorts: [{ id: "smartbill.runtime-host" }],
       provides: {
         capabilities: ["finance.external-invoicing", "finance.external-payment-sync"],
-      },
-      requires: {
-        ports: [{ id: "database.client" }, { id: "storage.object", optional: true }],
       },
       api: [
         {
           id: "@voyant-travel/plugin-smartbill#api.admin",
-          runtime: { entry: "./hono", export: "createSmartbillAdminModule" },
+          runtime: {
+            entry: "./graph-runtime",
+            export: "createSmartbillVoyantRuntime",
+          },
         },
       ],
       subscribers: [

@@ -15,6 +15,7 @@ describe("SmartBill deployment manifest", () => {
       runtimePorts: [{ id: "smartbill.runtime-host" }],
       provides: {
         capabilities: ["finance.external-invoicing", "finance.external-payment-sync"],
+        ports: [{ id: "smartbill.runtime-host" }, { id: "finance.invoice-settlement-poller" }],
       },
       api: [
         {

@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.140.2
+
+### Patch Changes
+
+- 0e1f53e: Declare the package-owned runtime contributor in Voyant package metadata so selected deployment graphs bind the SmartBill runtime host.
+
 ## 0.140.1
 
 ### Patch Changes

@@ -19,6 +19,7 @@ describe("SmartBill deployment manifest", () => {
       api: [
         {
           id: "@voyant-travel/plugin-smartbill#api.admin",
+          openapi: { document: "smartbill" },
           runtime: {
             entry: "./graph-runtime",
             export: "createSmartbillVoyantRuntime",

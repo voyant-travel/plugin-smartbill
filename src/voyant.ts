@@ -21,6 +21,7 @@ export const smartbillVoyantPlugin = definePlugin({
       id: `${PACKAGE_ID}#api.admin`,
       surface: "admin",
       mount: "smartbill",
+      openapi: { document: "smartbill" },
       transactional: true,
       runtime: {
         entry: "./graph-runtime",

@@ -15,6 +15,7 @@
     "./workflows": "./src/workflows.ts",
     "./types": "./src/types.ts",
     "./graph-runtime": "./src/graph-runtime.ts",
+    "./runtime-contributor": "./src/runtime-contributor.ts",
     "./subscriber-runtime": "./src/subscriber-runtime.ts",
     "./voyant": "./src/voyant.ts"
   },
@@ -26,12 +27,14 @@
     "test": "vitest run",
     "build": "pnpm run clean && NODE_OPTIONS=--max-old-space-size=14336 tsc -p tsconfig.json",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
+    "check:unified-graph": "node scripts/check-unified-graph.mjs",
     "prepack": "pnpm run build",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish"
   },
   "dependencies": {
+    "@hono/zod-openapi": "^1.4.0",
     "@voyant-travel/bookings": "^0.151.0",
     "@voyant-travel/core": "^0.117.0",
     "@voyant-travel/finance": "^0.151.0",
@@ -148,6 +151,11 @@
         "types": "./dist/graph-runtime.d.ts",
         "import": "./dist/graph-runtime.js",
         "default": "./dist/graph-runtime.js"
+      },
+      "./runtime-contributor": {
+        "types": "./dist/runtime-contributor.d.ts",
+        "import": "./dist/runtime-contributor.js",
+        "default": "./dist/runtime-contributor.js"
       },
       "./subscriber-runtime": {
         "types": "./dist/subscriber-runtime.d.ts",

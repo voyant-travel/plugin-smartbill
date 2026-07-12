@@ -1,5 +1,11 @@
 # @voyant-travel/plugin-smartbill
 
+## 0.140.1
+
+### Patch Changes
+
+- 6869d4a: Declare the SmartBill admin OpenAPI document and publish a package-owned typed runtime contributor for Node deployments.
+
 ## 0.140.0
 
 ### Minor Changes

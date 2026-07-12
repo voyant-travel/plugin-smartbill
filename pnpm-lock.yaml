@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@hono/zod-openapi':
+        specifier: ^1.4.0
+        version: 1.4.0(hono@4.12.27)(zod@4.4.3)
       '@voyant-travel/bookings':
         specifier: ^0.151.0
         version: 0.151.5(@neondatabase/serverless@1.1.0)(@upstash/redis@1.38.0)(pg@8.22.0)(postgres@3.4.9)

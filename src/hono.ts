@@ -1,3 +1,4 @@
+import { OpenAPIHono } from "@hono/zod-openapi"
 import type { Module, ModuleContainer } from "@voyant-travel/core"
 import {
   FINANCE_ROUTE_RUNTIME_CONTAINER_KEY,
@@ -5,10 +6,11 @@ import {
 } from "@voyant-travel/finance"
 import type { HonoModule } from "@voyant-travel/hono/module"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
-import { Hono } from "hono"
 
 import type { SmartbillPluginOptions } from "./plugin.js"
 import { syncSmartbillInvoice } from "./sync.js"
+
+export const SMARTBILL_OPENAPI_API_ID = "@voyant-travel/plugin-smartbill#api.admin"
 
 type Env = {
   Bindings: Record<string, unknown>
@@ -34,7 +36,8 @@ export interface SmartbillAdminRouteRuntime {
 export const SMARTBILL_ADMIN_RUNTIME_CONTAINER_KEY = "providers.smartbill.adminRuntime"
 
 export function createSmartbillAdminRoutes(options: SmartbillAdminModuleOptions) {
-  return new Hono<Env>().post("/invoices/:id/sync", async (c) => {
+  const hono = new OpenAPIHono<Env>()
+  hono.post("/invoices/:id/sync", async (c) => {
     try {
       const runtime = resolveSmartbillAdminRouteRuntime(c, options)
       const financeRuntime = resolveFinanceRouteRuntime(c.var.container)
@@ -58,6 +61,32 @@ export function createSmartbillAdminRoutes(options: SmartbillAdminModuleOptions)
       return c.json({ error: message }, 502)
     }
   })
+
+  hono.openAPIRegistry.registerPath({
+    method: "post",
+    path: "/invoices/{id}/sync",
+    operationId: "syncSmartbillInvoice",
+    summary: "Synchronize an invoice with SmartBill",
+    parameters: [
+      {
+        in: "path",
+        name: "id",
+        schema: { type: "string", minLength: 1 },
+        required: true,
+        description: "Voyant invoice identifier.",
+      },
+    ],
+    responses: {
+      200: { description: "The existing SmartBill invoice reference was synchronized." },
+      201: { description: "The invoice was created in SmartBill." },
+      404: { description: "The Voyant invoice was not found." },
+      409: { description: "The invoice document type is not supported by SmartBill." },
+      502: { description: "SmartBill synchronization failed." },
+    },
+    "x-voyant-api-id": SMARTBILL_OPENAPI_API_ID,
+  })
+
+  return hono
 }
 
 export function createSmartbillAdminModule(options: SmartbillAdminModuleOptions): HonoModule {

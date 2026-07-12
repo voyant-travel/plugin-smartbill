@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-import { createSmartbillAdminRoutes } from "../../src/hono.js"
+import { createSmartbillAdminRoutes, SMARTBILL_OPENAPI_API_ID } from "../../src/hono.js"
 
 const financeRuntimeKey = vi.hoisted(() => "providers.finance.runtime")
 const syncSmartbillInvoiceMock = vi.hoisted(() => vi.fn())
@@ -46,6 +46,19 @@ beforeEach(() => {
 })
 
 describe("createSmartbillAdminRoutes", () => {
+  it("publishes the package-owned admin operation with exact graph ownership", () => {
+    const routes = createSmartbillAdminRoutes({ pluginOptions })
+    const document = routes.getOpenAPI31Document({
+      openapi: "3.1.0",
+      info: { title: "SmartBill admin", version: "1" },
+    })
+
+    expect(document.paths?.["/invoices/{id}/sync"]?.post).toMatchObject({
+      operationId: "syncSmartbillInvoice",
+      "x-voyant-api-id": SMARTBILL_OPENAPI_API_ID,
+    })
+  })
+
   it("syncs an invoice through the shared SmartBill service", async () => {
     const resolveInvoiceExchangeRate = vi.fn()
     const onInvoiceFxResolutionError = vi.fn()

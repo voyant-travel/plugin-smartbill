@@ -14,6 +14,7 @@ describe("package exports", () => {
     })
     expect(packageJson.exports["./voyant"]).toBe("./src/voyant.ts")
     expect(packageJson.exports["./graph-runtime"]).toBe("./src/graph-runtime.ts")
+    expect(packageJson.exports["./runtime-contributor"]).toBe("./src/runtime-contributor.ts")
     expect(packageJson.exports["./subscriber-runtime"]).toBe("./src/subscriber-runtime.ts")
     expect(packageJson.publishConfig.exports["./voyant"]).toEqual({
       types: "./dist/voyant.d.ts",
@@ -29,6 +30,11 @@ describe("package exports", () => {
       types: "./dist/graph-runtime.d.ts",
       import: "./dist/graph-runtime.js",
       default: "./dist/graph-runtime.js",
+    })
+    expect(packageJson.publishConfig.exports["./runtime-contributor"]).toEqual({
+      types: "./dist/runtime-contributor.d.ts",
+      import: "./dist/runtime-contributor.js",
+      default: "./dist/runtime-contributor.js",
     })
   })
 })

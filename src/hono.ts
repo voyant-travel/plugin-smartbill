@@ -36,7 +36,8 @@ export interface SmartbillAdminRouteRuntime {
 export const SMARTBILL_ADMIN_RUNTIME_CONTAINER_KEY = "providers.smartbill.adminRuntime"
 
 export function createSmartbillAdminRoutes(options: SmartbillAdminModuleOptions) {
-  const hono = new OpenAPIHono<Env>().post("/invoices/:id/sync", async (c) => {
+  const hono = new OpenAPIHono<Env>()
+  hono.post("/invoices/:id/sync", async (c) => {
     try {
       const runtime = resolveSmartbillAdminRouteRuntime(c, options)
       const financeRuntime = resolveFinanceRouteRuntime(c.var.container)

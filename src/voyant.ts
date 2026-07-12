@@ -3,6 +3,18 @@ import { smartbillRuntimeHostPort } from "./runtime-port.js"
 
 const PACKAGE_ID = "@voyant-travel/plugin-smartbill"
 
+const smartbillAdminApi = {
+  id: `${PACKAGE_ID}#api.admin`,
+  surface: "admin" as const,
+  mount: "smartbill",
+  openapi: { document: "smartbill" },
+  transactional: true,
+  runtime: {
+    entry: "./graph-runtime",
+    export: "createSmartbillVoyantRuntime",
+  },
+}
+
 /** Import-cheap deployment declaration owned by the SmartBill plugin package. */
 export const smartbillVoyantPlugin = definePlugin({
   id: PACKAGE_ID,
@@ -16,19 +28,7 @@ export const smartbillVoyantPlugin = definePlugin({
   provides: {
     capabilities: ["finance.external-invoicing", "finance.external-payment-sync"],
   },
-  api: [
-    {
-      id: `${PACKAGE_ID}#api.admin`,
-      surface: "admin",
-      mount: "smartbill",
-      openapi: { document: "smartbill" },
-      transactional: true,
-      runtime: {
-        entry: "./graph-runtime",
-        export: "createSmartbillVoyantRuntime",
-      },
-    },
-  ],
+  api: [smartbillAdminApi],
   subscribers: [
     {
       id: `${PACKAGE_ID}#subscriber.invoice-issued`,

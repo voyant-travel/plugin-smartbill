@@ -15,6 +15,12 @@ if (packageJson.voyant?.schemaVersion !== "voyant.package.v1") {
   violations.push("package.json must advertise voyant.package.v1 metadata")
 }
 if (
+  packageJson.voyant?.runtime?.entry !== "./runtime-contributor" ||
+  packageJson.voyant?.runtime?.export !== "createSmartbillRuntimePortContribution"
+) {
+  violations.push("package.json must activate the package-owned runtime contributor")
+}
+if (
   packageJson.exports?.["./runtime-contributor"] !== "./src/runtime-contributor.ts" ||
   !packageJson.publishConfig?.exports?.["./runtime-contributor"]
 ) {

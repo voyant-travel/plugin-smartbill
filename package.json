@@ -178,7 +178,11 @@
   "voyant": {
     "schemaVersion": "voyant.package.v1",
     "kind": "plugin",
-    "manifest": "./voyant"
+    "manifest": "./voyant",
+    "runtime": {
+      "entry": "./runtime-contributor",
+      "export": "createSmartbillRuntimePortContribution"
+    }
   },
   "packageManager": "pnpm@10.18.0",
   "engines": {

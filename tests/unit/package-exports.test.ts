@@ -11,6 +11,10 @@ describe("package exports", () => {
       schemaVersion: "voyant.package.v1",
       kind: "plugin",
       manifest: "./voyant",
+      runtime: {
+        entry: "./runtime-contributor",
+        export: "createSmartbillRuntimePortContribution",
+      },
     })
     expect(packageJson.exports["./voyant"]).toBe("./src/voyant.ts")
     expect(packageJson.exports["./graph-runtime"]).toBe("./src/graph-runtime.ts")

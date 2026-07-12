@@ -38,9 +38,36 @@ for (const expected of [
 }
 if (
   !contributor.includes("createSmartbillRuntimePortContribution") ||
-  !contributor.includes("[smartbillRuntimeHostPort.id]: contribution.host")
+  !contributor.includes("[smartbillRuntimeHostPort.id]: runtimeHost") ||
+  !contributor.includes("[financeInvoiceSettlementPollerRuntimePort.id]: settlementProvider")
 ) {
-  violations.push("SmartBill must own its typed runtime-port contribution map")
+  violations.push("SmartBill must own its host and Finance settlement runtime-port contributions")
+}
+if (
+  !contributor.includes("primitives.env(context.bindings)") ||
+  contributor.includes("contribution.host") ||
+  /\bhost\s*:\s*SmartbillRuntimeHost\b/.test(contributor)
+) {
+  violations.push(
+    "SmartBill must derive runtime services from primitives without a deployment host argument",
+  )
+}
+for (const expected of [
+  "SMARTBILL_API_TOKEN",
+  "SMARTBILL_TOKEN",
+  "SMARTBILL_INVOICE_SERIES_NAME",
+  "SMARTBILL_SERIES_NAME",
+  "required SMARTBILL_* credentials are missing",
+]) {
+  if (!contributor.includes(expected)) {
+    violations.push(`missing package-owned SmartBill runtime behavior: ${expected}`)
+  }
+}
+if (
+  !manifest.includes("providePort(smartbillRuntimeHostPort)") ||
+  !manifest.includes("providePort(financeInvoiceSettlementPollerRuntimePort)")
+) {
+  violations.push("the SmartBill manifest must declare authority for both contributed ports")
 }
 if (/cloudflare|workers/i.test(`${manifest}\n${contributor}`)) {
   violations.push("SmartBill deployment metadata must remain Node-only")
@@ -52,4 +79,6 @@ if (violations.length > 0) {
   process.exit(1)
 }
 
-console.log("check-unified-graph: OK (OpenAPI authority and package-owned runtime contributor)")
+console.log(
+  "check-unified-graph: OK (OpenAPI authority, primitive host, and settlement contribution)",
+)

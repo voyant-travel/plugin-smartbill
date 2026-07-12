@@ -1,4 +1,5 @@
-import { definePlugin, requirePort } from "@voyant-travel/core/project"
+import { definePlugin, providePort, requirePort } from "@voyant-travel/core/project"
+import { financeInvoiceSettlementPollerRuntimePort } from "@voyant-travel/finance"
 import { smartbillRuntimeHostPort } from "./runtime-port.js"
 
 const PACKAGE_ID = "@voyant-travel/plugin-smartbill"
@@ -27,6 +28,10 @@ export const smartbillVoyantPlugin = definePlugin({
   runtimePorts: [requirePort(smartbillRuntimeHostPort)],
   provides: {
     capabilities: ["finance.external-invoicing", "finance.external-payment-sync"],
+    ports: [
+      providePort(smartbillRuntimeHostPort),
+      providePort(financeInvoiceSettlementPollerRuntimePort),
+    ],
   },
   api: [smartbillAdminApi],
   subscribers: [
